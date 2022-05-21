@@ -1,0 +1,30 @@
+input{
+    width: 80%; /*親要素いっぱい広げる*/
+    padding: 10px 15px; /*ボックスを大きくする*/
+    font-size: 16px;
+    border-radius: 3px; /*ボックス角の丸み*/
+    border: 2px solid #ddd; /*枠線*/
+    box-sizing: border-box; /*横幅の解釈をpadding, borderまでとする*/
+}
+
+input:focus {
+    box-shadow: 0 0 5px 0 rgba(255,153,0,1);
+    border: 2px solid #FFF !important;
+    outline: 0;
+}
+
+textarea {
+    width: 80%; /*親要素いっぱい広げる*/
+    height: 20%;
+    padding: 10px 15px; /*ボックスを大きくする*/
+    font-size: 16px;
+    border-radius: 3px; /*ボックス角の丸み*/
+    border: 2px solid #ddd; /*枠線*/
+    box-sizing: border-box; /*横幅の解釈をpadding, borderまでとする*/
+}
+
+textarea:focus {
+    box-shadow: 0 0 5px 0 rgba(255,153,0,1);
+    border: 2px solid #FFF !important;
+    outline: 0;
+}

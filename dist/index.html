@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<br>
+
+  <head>
+    <meta charset="utf-8" />
+    <script src="app.js"></script>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/input.css">
+    <link rel="stylesheet" href="css/div.css">
+  </head>
+  <body>
+    <h1>
+      Tauri<br>
+      SandBox
+    </h1>
+    <h2>print command（Rust → JS）</h2>
+    <button onclick="print_command()">println!</button><br>
+
+    <h2>文字列反転（引数の受け渡し）</h2>
+    <input type="text" id="text_area" onchange="rev_string_command()"></input>
+    <button onclick="rev_string_command()">Change</button><br>
+    <div class="box1">
+      <label>入力文字列：<div id="text-msg"></div></label><br>
+      <label>反転文字列：<div id="rev-text-msg"></div></label><br>
+    </div>
+
+    <h2>メッセージ（構造体の受け渡し）</h2>
+    <label>名前：<br>
+      <input type="text" id="name_text_area"></input>
+    </label>
+    <br>
+    <label>本文：<br>
+      <textarea type="text" id="msg_text_area"
+      cols="50" rows="5" onchange="chat_command()">
+      </textarea>
+    </label>
+    <button onclick="chat_command()">送信</button>
+    <br>
+    <label>Lv：<div id="display_lv"></div></label>
+    <br>
+    <label><div id="display_msg"></div></label>
+    <br>
+
+    <h2>年齢入力（Result型の受け渡し）</h2>
+    <input type="number" id="age_text_area" onchange="age_command()"></input>
+    <div id="display_age"></div>
+
+    <h2>ファイル入力（tauri JS API）</h2>
+    <div class="outer">
+      <div class="inner">
+        <button onclick="file_dialog_command()" class="center">Click to open dialog</button>
+      </div>
+    </div>
+
+    <h2>広告(ask)</h2>
+    <div class="outer">
+      <div class="inner">
+        <button onclick="ask_command()" class="center">おすなおすな</button>
+        <p id="display_hangman">
+                Λ_Λ<br>
+                (´∀`)<br>
+                (　 　)<br>
+                Ｕ`Ｕ<br>
+        </p>
+      </div>
+    </div>
+  </body>
+
+</html>

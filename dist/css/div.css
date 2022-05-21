@@ -1,0 +1,10 @@
+.box1 {
+    padding: 0.5em 1em;
+    margin: 2em 0;
+    border: solid 3px #aaaaaa;
+}
+.box1 p {
+    font-weight: bold;
+    margin: 0; 
+    padding: 0;
+}
