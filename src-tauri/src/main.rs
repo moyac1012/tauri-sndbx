@@ -1,3 +1,4 @@
+use tauri::Manager;
 use serde::{ Serialize, Deserialize };
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -40,6 +41,15 @@ fn age_command(age: i32) -> Result<String, String>{
 
 fn main() {
   tauri::Builder::default()
+    .setup(|app| {
+          app.listen_global("front-to-back", |event| {
+          println!(
+              "got front-to-back with payload {:?}",
+              event.payload().unwrap()
+          )
+      });
+      Ok(())
+    })
     .invoke_handler(tauri::generate_handler![
       print_command,
       rev_string_command,

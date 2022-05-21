@@ -83,3 +83,8 @@ window.__TAURI__.window
             console.log('x', x);
             console.log('y', y);
         })
+
+function emitMessage_command() {
+    window.__TAURI__.event
+        .emit('front-to-back', "hello from front")
+}
