@@ -1,3 +1,5 @@
+mod ziplib;
+
 use tauri::Manager;
 use serde::{ Serialize, Deserialize };
 
@@ -21,7 +23,7 @@ fn rev_string_command(s : String) -> String {
 
 #[tauri::command]
 fn chat_command(text: ChatMessage) -> ChatMessage {
-  let username = text.name.clone();
+  let username: String = text.name.clone();
   ChatMessage {
         name: text.name,
         lv: text.lv + 1,
@@ -37,6 +39,20 @@ fn age_command(age: i32) -> Result<String, String>{
       126.. => Err(format!("死んでいます")),
       _ => Err(format!("生まれてません")),
   }
+}
+
+#[tauri::command]
+fn zip_command(filename: &str) -> String{
+  match ziplib::create_zip(filename) {
+    Ok(zip_filename) => {
+      println!("[Success] File written to {}", zip_filename);
+      format!("[Success] File written to {}", zip_filename)
+    }
+    Err(e) => {
+        eprintln!("Error: {:?}", e);
+        format!("Error: {:?}", e)
+    }
+}
 }
 
 fn main() {
@@ -55,6 +71,7 @@ fn main() {
       rev_string_command,
       chat_command,
       age_command,
+      zip_command,
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");

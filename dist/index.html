@@ -45,12 +45,12 @@
     <input type="number" id="age_text_area" onchange="age_command()"></input>
     <div id="display_age"></div>
 
-    <h2>ファイル入力（tauri JS API）</h2>
+    <!-- <h2>ファイル入力（tauri JS API）</h2>
     <div class="outer">
       <div class="inner">
         <button onclick="file_dialog_command()" class="center">Click to open dialog</button>
       </div>
-    </div>
+    </div> -->
 
     <h2>広告(ask)</h2>
     <div class="outer">
@@ -67,6 +67,12 @@
 
     <h2>emit message</h2>
     <button onclick="emitMessage_command()">エミットテスト</button>
+
+    <h2>zip command</h2>
+    <button onclick="file_dialog_command()">Click to open dialog</button>
+    <button onclick="zip_command()">Click to zip</button>
+    <div id="display_zip_path"></div><br>
+    <div id="display_zip_result"></div>
   </body>
 
 </html>

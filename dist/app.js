@@ -61,12 +61,29 @@ function age_command(){
 }
 
 function file_dialog_command () {
+    let display_zip_path = document.getElementById("display_zip_path");
     window.__TAURI__.dialog
-        .open().then(files => console.log(files));
+        .open().then(files => display_zip_path.textContent = files);
+}
+
+function zip_command(){
+    let zip_path = document.getElementById("display_zip_path").textContent;
+    let display_zip_result = document.getElementById("display_zip_result");
+    if(zip_path == ""){
+        display_zip_result.textContent = "ファイルを選択してください";
+    }else{
+        console.log(zip_path);
+        window.__TAURI__
+            .invoke("zip_command", {filename: zip_path})
+            .then(result => {
+                console.log(result);
+                display_zip_result.textContent = result
+        });
+    }
 }
 
 function ask_command() {
-    let hangman =     "＿＿＿＿＿＿＿<br>　　&nbsp;||　　<br>　Λ||Λ<br>（&nbsp;/&nbsp;⌒ヽ<br>　|&nbsp;|&nbsp;　　|<br>　∪&nbsp;亅|<br>　&nbsp;|　|　|<br>　&nbsp;∪∪<br>　‐ニ三ニ‐";
+    let hangman = "＿＿＿＿＿＿＿<br>　　&nbsp;||　　<br>　Λ||Λ<br>（&nbsp;/&nbsp;⌒ヽ<br>　|&nbsp;|&nbsp;　　|<br>　∪&nbsp;亅|<br>　&nbsp;|　|　|<br>　&nbsp;∪∪<br>　‐ニ三ニ‐";
     let display_hangman = document.getElementById("display_hangman");
     window.__TAURI__.dialog
         .ask("あなたは｜好きですか？", "")
