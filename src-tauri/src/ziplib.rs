@@ -4,8 +4,9 @@ use std::fs::File;
 use std::path::{Path, PathBuf};
 use std::fs;
 use std::io;
+use zip::result;
 
-pub fn create_zip(filepath: &str) -> zip::result::ZipResult<String> {
+pub fn create_zip(filepath: &str) -> result::ZipResult<String> {
     let path = Path::new(filepath);
     let zip_filepath = path.file_stem().unwrap().to_str().unwrap().to_string() + ".zip";
 
@@ -59,13 +60,21 @@ fn read_file(filename: &str) -> zip::result::ZipResult<Vec<u8>> {
     Ok(buf)
 }
 
-pub fn extract_zip(filename: &str) -> zip::result::ZipResult<String> {
+pub fn extract_zip(filename: &str) -> result::ZipResult<String> {
 
     let fname = std::path::Path::new(filename);
-    let file = fs::File::open(&fname).unwrap();
+    let file = fs::File::open(&fname);
+    let file = match file {
+        Ok(f) => f,
+        Err(e) => return Err(result::ZipError::Io(e))
+    };
     let mut unzip_msg: String = String::new();
 
-    let mut archive = zip::ZipArchive::new(file).unwrap();
+    let archive = zip::ZipArchive::new(file);
+    let mut archive = match archive {
+        Ok(zipfile) => zipfile,
+        Err(e) => return Err(e)
+    };
 
     for i in 0..archive.len() {
         let mut file = archive.by_index(i).unwrap();
