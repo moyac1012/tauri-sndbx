@@ -1,7 +1,9 @@
 mod ziplib;
 
-use tauri::Manager;
+use tauri::{CustomMenuItem, SystemTrayMenu, SystemTrayMenuItem, SystemTrayEvent, WindowBuilder, Manager};
 use serde::{ Serialize, Deserialize };
+
+use tauri::SystemTray;
 
 #[derive(Debug, Serialize, Deserialize)]
 struct ChatMessage {
@@ -70,15 +72,39 @@ fn unzip_command(filename : &str) -> String {
 }
 
 fn main() {
-  tauri::Builder::default()
-    .setup(|app| {
-          app.listen_global("front-to-back", |event| {
-          println!(
-              "got front-to-back with payload {:?}",
-              event.payload().unwrap()
-          )
-      });
-      Ok(())
+  let tray = SystemTray::new();
+    tauri::Builder::default()
+    .system_tray(tray)
+    .on_system_tray_event(|app, event| match event {
+      SystemTrayEvent::LeftClick {
+        position: pos,
+        size: _,
+        ..
+      } => {
+        let menu_window = app.get_window("menu");
+        match menu_window {
+          Some(window) =>{
+            if window.is_visible().unwrap(){
+              window.hide().unwrap();
+            }else{
+              window.show().unwrap();
+            }
+          },
+          None => {
+            let window = WindowBuilder::new(
+              app,
+              "menu".to_string(),
+              tauri::WindowUrl::App("menu.html".into()),
+            )
+            .position(pos.x, pos.y)
+            .always_on_top(true)
+            .decorations(false)
+            .visible(true)
+            .build();
+          }
+        }
+      }
+      _ => {}
     })
     .invoke_handler(tauri::generate_handler![
       print_command,

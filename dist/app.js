@@ -66,7 +66,7 @@ function file_dialog_command (query) {
 
     if(query == "zip"){
         window.__TAURI__.dialog
-            .open({recursive: true}).then(files => display_zip_path.textContent = files);
+            .open({recursive: true, multiple: true}).then(files => display_zip_path.textContent = files);
     }else if(query == "unzip"){
         window.__TAURI__.dialog
             .open({filters: {extensions: ['.zip']},recursive: true }).then(files => display_unzip_path.textContent = files);
@@ -81,7 +81,7 @@ function zip_command(){
     }else{
         console.log(zip_path);
         window.__TAURI__
-            .invoke("zip_command", {filename: zip_path})
+            .invoke("zip_command", {filename: zip_path.split(",")})
             .then(result => {
                 console.log(result);
                 display_zip_result.textContent = result
