@@ -52,7 +52,21 @@ fn zip_command(filename: &str) -> String{
         eprintln!("Error: {:?}", e);
         format!("Error: {:?}", e)
     }
+  }
 }
+
+#[tauri::command]
+fn unzip_command(filename : &str) -> String {
+  match ziplib::extract_zip(filename) {
+    Ok(unzip_msg) => {
+      println!("[Success] File written to {}", unzip_msg);
+      format!("[Success] File written to {}", unzip_msg)
+    }
+    Err(e) => {
+        eprintln!("Error: {:?}", e);
+        format!("Error: {:?}", e)
+    }
+  }
 }
 
 fn main() {
@@ -70,8 +84,9 @@ fn main() {
       print_command,
       rev_string_command,
       chat_command,
-      age_command,
       zip_command,
+      age_command,
+      unzip_command
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");

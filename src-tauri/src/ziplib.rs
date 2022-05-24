@@ -59,10 +59,11 @@ fn read_file(filename: &str) -> zip::result::ZipResult<Vec<u8>> {
     Ok(buf)
 }
 
-pub fn extract_zip(filename: &str) -> zip::result::ZipResult<()> {
+pub fn extract_zip(filename: &str) -> zip::result::ZipResult<String> {
 
     let fname = std::path::Path::new(filename);
     let file = fs::File::open(&fname).unwrap();
+    let mut unzip_msg: String = String::new();
 
     let mut archive = zip::ZipArchive::new(file).unwrap();
 
@@ -73,7 +74,8 @@ pub fn extract_zip(filename: &str) -> zip::result::ZipResult<()> {
             None => continue,
         };
         if (*file.name()).ends_with('/') {
-            println!("File {} extracted to \"{}\"", i, outpath.display());
+            //println!("File {} extracted to \"{}\"", i, outpath.display());
+            unzip_msg += &format!("File {} extracted to \"{}\"", i, outpath.display());
             fs::create_dir_all(&outpath).unwrap();
         } else {
             println!(
@@ -82,6 +84,7 @@ pub fn extract_zip(filename: &str) -> zip::result::ZipResult<()> {
                 outpath.display(),
                 file.size()
             );
+            unzip_msg += &format!("File {} extracted to \"{}\" ({} bytes)", i, outpath.display(), file.size());
             if let Some(p) = outpath.parent() {
                 if !p.exists() {
                     fs::create_dir_all(&p).unwrap();
@@ -92,7 +95,7 @@ pub fn extract_zip(filename: &str) -> zip::result::ZipResult<()> {
         }
     }
 
-    Ok(())
+    Ok(unzip_msg)
 }
 
 fn visit_dir<P: AsRef<Path>>(path: P, paths: &mut Vec<PathBuf>) -> io::Result<()> {

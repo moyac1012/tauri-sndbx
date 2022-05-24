@@ -60,10 +60,16 @@ function age_command(){
     }
 }
 
-function file_dialog_command () {
+function file_dialog_command (query) {
     let display_zip_path = document.getElementById("display_zip_path");
-    window.__TAURI__.dialog
-        .open().then(files => display_zip_path.textContent = files);
+    let display_unzip_path = document.getElementById("display_unzip_path");
+    if(query == "zip"){
+        window.__TAURI__.dialog
+            .open().then(files => display_zip_path.textContent = files);
+    }else if(query == "unzip"){
+        window.__TAURI__.dialog
+            .open().then(files => display_unzip_path.textContent = files);
+    }
 }
 
 function zip_command(){
@@ -75,6 +81,22 @@ function zip_command(){
         console.log(zip_path);
         window.__TAURI__
             .invoke("zip_command", {filename: zip_path})
+            .then(result => {
+                console.log(result);
+                display_zip_result.textContent = result
+        });
+    }
+}
+
+function unzip_command(){
+    let zip_path = document.getElementById("display_unzip_path").textContent;
+    let display_zip_result = document.getElementById("display_unzip_result");
+    if(zip_path == ""){
+        display_zip_result.textContent = "ZIPファイルを選択してください";
+    }else{
+        console.log(zip_path);
+        window.__TAURI__
+            .invoke("unzip_command", {filename: zip_path})
             .then(result => {
                 console.log(result);
                 display_zip_result.textContent = result
