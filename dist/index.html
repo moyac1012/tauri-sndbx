@@ -17,7 +17,7 @@
     <button onclick="print_command()">println!</button><br>
 
     <h2>文字列反転（引数の受け渡し）</h2>
-    <input type="text" id="text_area" onchange="rev_string_command()"></input>
+    <input class="input_text" type="text" id="text_area" onchange="rev_string_command()"></input>
     <button onclick="rev_string_command()">Change</button><br>
     <div class="box1">
       <label>入力文字列：<div id="text-msg"></div></label><br>
@@ -26,7 +26,7 @@
 
     <h2>メッセージ（構造体の受け渡し）</h2>
     <label>名前：<br>
-      <input type="text" id="name_text_area"></input>
+      <input class="input_text" type="text" id="name_text_area"></input>
     </label>
     <br>
     <label>本文：<br>
@@ -71,7 +71,7 @@
     <h2>zip command</h2>
     <div class="outer">
       <div class="inner">
-        <input type="text" id="zip_output_path_text_area"></input>
+        <input class="input_text" type="text" id="zip_output_path_text_area"></input>
         <button onclick="file_dialog_command('zip')">Click to open dialog</button>
         <button onclick="zip_command()">Click to zip</button>
       </div>
@@ -82,7 +82,7 @@
     <h2>unzip command</h2>
     <div class="outer">
       <div class="inner">
-        <input type="text" id="unzip_output_path_text_area"></input>
+        <input class="input_text" type="text" id="unzip_output_path_text_area"></input>
         <button onclick="file_dialog_command('zip')">Click to open dialog</button>
         <button onclick="unzip_command()">Click to unzip</button>
       </div>

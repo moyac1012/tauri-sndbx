@@ -1,4 +1,4 @@
-input{
+.input_text{
     width: 80%; /*親要素いっぱい広げる*/
     padding: 10px 15px; /*ボックスを大きくする*/
     font-size: 16px;
@@ -7,7 +7,7 @@ input{
     box-sizing: border-box; /*横幅の解釈をpadding, borderまでとする*/
 }
 
-input:focus {
+.input_text:focus {
     box-shadow: 0 0 5px 0 rgba(255,153,0,1);
     border: 2px solid #FFF !important;
     outline: 0;
