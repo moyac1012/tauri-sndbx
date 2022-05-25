@@ -76,12 +76,16 @@ function file_dialog_command (query) {
 function zip_command(){
     let zip_path = document.getElementById("display_zip_path").textContent;
     let display_zip_result = document.getElementById("display_zip_result");
+    let zip_output_path_value =  document.getElementById("zip_output_path_text_area").value;
+    if(zip_output_path_value == ""){
+        zip_output_path_value = "./"
+    }
     if(zip_path == ""){
         display_zip_result.textContent = "ファイルを選択してください";
     }else{
         console.log(zip_path);
         window.__TAURI__
-            .invoke("zip_command", {filename: zip_path.split(",")})
+            .invoke("zip_command", {filepath: zip_path, outputpath: zip_output_path_value})
             .then(result => {
                 console.log(result);
                 display_zip_result.textContent = result
@@ -123,7 +127,7 @@ window.__TAURI__.window
             console.log('x', x);
             console.log('y', y);
         })
-
+    
 function emitMessage_command() {
     window.__TAURI__.event
         .emit('front-to-back', "hello from front")
