@@ -4,10 +4,11 @@ body {
 
 h1 {
     background: #b0dcfa; /*背景色*/
-    padding: 0.5em;/*文字周りの余白*/
+    padding: 0.2em;/*文字周りの余白*/
     color: white;/*文字を白に*/
     border-radius: 0.5em;/*角の丸み*/
-    text-align: center
+    text-align: center;
+    font-size: 30px
   }
 
 h2 {

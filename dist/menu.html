@@ -7,11 +7,12 @@
         <link rel="stylesheet" href="css/div.css">
     </head>
     <body>
-        <h1>file drop</h1>
-        <div id="display_files"></div>
+        <h1>Zip the dropped file</h1>
+        <h4>Chose Output Directry</h4>
+        <div class="box2" id="dialog_btn" onclick="file_dialog_command()">
+            <p class="cp_link" id="zip_output_path_text_area"></p>
+        </div>
         <div id="display_zip_result"></div>
-        <div>
-        <input class="input_text" type="text" id="zip_output_path_text_area"><br>
         <input type="checkbox" id="scales" name="scales">
         <label for="scales">一つのファイルにする</label>
         </div>

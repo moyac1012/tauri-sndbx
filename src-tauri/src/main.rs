@@ -1,6 +1,6 @@
 mod ziplib;
 
-use tauri::{CustomMenuItem, SystemTrayMenu, SystemTrayMenuItem, SystemTrayEvent, WindowBuilder, Manager};
+use tauri::{ SystemTrayEvent, WindowBuilder, Manager, Position, PhysicalPosition};
 use serde::{ Serialize, Deserialize };
 
 use tauri::SystemTray;
@@ -44,17 +44,21 @@ fn age_command(age: i32) -> Result<String, String>{
 }
 
 #[tauri::command]
-fn zip_command(filename: &str) -> String{
-  match ziplib::create_zip(filename) {
-    Ok(zip_filename) => {
-      println!("[Success] File written to {}", zip_filename);
-      format!("[Success] File written to {}", zip_filename)
-    }
-    Err(e) => {
-        eprintln!("Error: {:?}", e);
-        format!("Error: {:?}", e)
+fn zip_command(filepaths: Vec<&str>, outputpath: String) -> String{
+  let mut zip_result_msg: String = String::new();
+  for filepath in filepaths{
+    match ziplib::create_zip(filepath, outputpath.clone()) {
+      Ok(zip_filename) => {
+        println!("[Success] File written to {:?}", zip_filename);
+        zip_result_msg += &format!("[Success] File written to {:?}", zip_filename);
+      }
+      Err(e) => {
+          eprintln!("Error: {:?}", e);
+          zip_result_msg += &format!("Error: {:?}", e);
+      }
     }
   }
+  zip_result_msg
 }
 
 #[tauri::command]
@@ -71,7 +75,7 @@ fn unzip_command(filename : &str) -> String {
   }
 }
 
-fn main() {
+fn main(){
   let tray = SystemTray::new();
     tauri::Builder::default()
     .system_tray(tray)
@@ -82,24 +86,33 @@ fn main() {
         ..
       } => {
         let menu_window = app.get_window("menu");
+        let physical_pos:PhysicalPosition<i32> = {PhysicalPosition{x: pos.x as i32, y: pos.y as i32}};
+        let physical_pos = Position::Physical(physical_pos);
+
         match menu_window {
           Some(window) =>{
             if window.is_visible().unwrap(){
               window.hide().unwrap();
             }else{
+              window.set_position(physical_pos).unwrap();
               window.show().unwrap();
             }
           },
           None => {
-            let window = WindowBuilder::new(
+            let window_x_size = 400.0;
+            let window_y_size = 300.0;
+            let _window = WindowBuilder::new(
               app,
               "menu".to_string(),
               tauri::WindowUrl::App("menu.html".into()),
             )
-            .position(pos.x, pos.y)
             .always_on_top(true)
             .decorations(false)
-            .visible(true)
+            .inner_size(window_x_size, window_y_size)
+            .min_inner_size(window_x_size, window_y_size)
+            .max_inner_size(window_x_size, window_y_size)
+            .visible(false)
+            .position(pos.x, pos.y)
             .build();
           }
         }
