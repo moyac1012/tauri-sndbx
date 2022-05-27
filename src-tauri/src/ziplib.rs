@@ -16,22 +16,7 @@ use zip::result;
 //     }
 // }
 
-pub fn create_zip(filepath: &str, mut output_path: String) -> zip::result::ZipResult<String> {
-
-    let path = Path::new(filepath);
-    let zip_filepath = path.file_stem().unwrap().to_str().unwrap().to_string() + ".zip";
-    if output_path.chars().last().unwrap() != '/' {
-        output_path = output_path + "/";
-    }
-    create_dir_all(output_path.clone())?;
-    let file = std::fs::File::create(output_path.clone() + &zip_filepath).unwrap();
-
-    let mut zip = zip::ZipWriter::new(file);
-
-    let options = FileOptions::default()
-        .compression_method(zip::CompressionMethod::Deflated)
-        .unix_permissions(0o755);
-
+fn calculate_path_of_first_part(filepath: &str) -> usize{
     let mut path_of_last_cnt = 0;
     let rev_path = filepath.chars().rev();
     for c in rev_path {
@@ -41,7 +26,28 @@ pub fn create_zip(filepath: &str, mut output_path: String) -> zip::result::ZipRe
             break;
         }
     }
-    let first_part_of_path = filepath.len() - path_of_last_cnt;
+    filepath.len() - path_of_last_cnt
+}
+
+pub fn create_zip(filepath: &str, mut output_path: String) -> zip::result::ZipResult<String> {
+
+    if output_path.chars().last().unwrap() != '/' {
+        output_path = output_path + "/";
+    }
+    create_dir_all(&output_path)?;
+
+    let path = Path::new(filepath);
+    let zip_filename = path.file_stem().unwrap().to_str().unwrap().to_string() + ".zip"; 
+    let file = match std::fs::File::create(output_path.clone() + &zip_filename){
+        Ok(file) => file,
+        Err(e) => return Err(result::ZipError::Io(e)),
+    };
+    let mut zip = zip::ZipWriter::new(file);
+    let options = FileOptions::default()
+        .compression_method(zip::CompressionMethod::Deflated)
+        .unix_permissions(0o755);
+    let first_part_of_path = calculate_path_of_first_part(filepath);
+
     if path.is_file() {
         let buf = match read_file(filepath){
             Ok(buf) => buf,
@@ -58,20 +64,13 @@ pub fn create_zip(filepath: &str, mut output_path: String) -> zip::result::ZipRe
             let origin_path = &paths[i];
             let origin_path = Path::new(&origin_path);
             let path = paths[i].to_string_lossy();
-            let path = &path[first_part_of_path..];
-            let path = Path::new(path);
+            let path = Path::new(&path[first_part_of_path..]);
             println!("{:?}", path);
             if origin_path.is_file(){
                 let buf = match read_file(origin_path.to_str().unwrap()){
                     Ok(buf) => buf,
                     Err(e) => return Err(e),
                 };
-                // if let Some(p) = path.parent() {
-                //     if !p.exists() {
-                //         println!("{}",output_path.clone() + &p.to_str().unwrap());
-                //         fs::create_dir_all(output_path.clone() + &p.to_str().unwrap()).unwrap();
-                //     }
-                // }
                 zip.start_file(path.to_path_buf().to_string_lossy(), options)?;
                 zip.write_all(&buf)?;
             }
@@ -79,7 +78,7 @@ pub fn create_zip(filepath: &str, mut output_path: String) -> zip::result::ZipRe
         zip.finish()?;
     }
 
-    Ok(output_path.clone() + &zip_filepath)
+    Ok(output_path + &zip_filename)
 }
 
 fn read_file(filename: &str) -> zip::result::ZipResult<Vec<u8>> {
